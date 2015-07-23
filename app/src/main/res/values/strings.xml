@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">NeverNote</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="welcome">Welcome to the NeverNote experience!</string>
+    <string name="evernote_login">Login with Evernote</string>
 </resources>

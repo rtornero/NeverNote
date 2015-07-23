@@ -3,13 +3,13 @@
     package="com.nevernote" >
 
     <application
+        android:name=".NeverNoteApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:label="@string/app_name" >
         <activity
-            android:name=".NeverNoteLoginActivity"
-            android:label="@string/app_name" >
+            android:name=".activities.NeverNoteLoginActivity"
+            android:theme="@style/NeverNoteLoginTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
