@@ -29,6 +29,7 @@ import android.util.Log;
 
 import com.evernote.client.android.login.EvernoteLoginFragment;
 import com.nevernote.R;
+import com.nevernote.views.NeverNoteLoginView;
 
 /**
  * Created by Roberto on 23/7/15.
@@ -45,14 +46,29 @@ public class NeverNoteLoginActivity extends AppCompatActivity implements Evernot
 
     /**
      * The Evernote session callback is required to be on a FragmentActivity subclass.
-     * Tried to put it on {@link com.nevernote.fragments.NeverNoteLoginFragment} but it didn't worked.
-     * @param authenticated
+     * Tried to put it on {@link com.nevernote.fragments.NeverNoteLoginFragment} but it didn't work.
+     *
+     * @param authenticated tells us if the authentication process went well or not
      */
     @Override
     public void onLoginFinished(boolean authenticated) {
-        if (authenticated)
+
+        if (authenticated) {
             Log.d(TAG, "Login achieved");
+            finish();
+        }
         else
             Log.d(TAG, "Login NOT achieved");
+
+        /*
+        A way to notify the view that the login process has finished is getting
+        a handler to it and sending the corresponding message.
+        */
+        final NeverNoteLoginView loginView = (NeverNoteLoginView) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_never_note_login);
+        if (loginView != null)
+            //Enable the login button again in case the process failed
+            loginView.enableLoginButton();
+
     }
 }

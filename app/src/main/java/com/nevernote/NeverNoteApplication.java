@@ -43,10 +43,19 @@ public class NeverNoteApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        //Initialize Evernote's singleton. We can use it by calling EvernoteSession.getInstance();
+        /*
+        Initialize Evernote's singleton. We can use it by calling
+        EvernoteSession.getInstance() wherever in the app
+         */
         new EvernoteSession.Builder(this)
                 .setEvernoteService(EVERNOTE_SERVICE)
                 .build(BuildConfig.EVERNOTE_CONSUMER_KEY, BuildConfig.EVERNOTE_CONSUMER_SECRET)
                 .asSingleton();
+
+        /*
+        We want to listen to activity lifecycle changes in order to detect whenever there
+        is no Evernote session available (nice behavior adapted from Evernote SDK Demo app).
+         */
+        registerActivityLifecycleCallbacks(new NeverNoteActivityListener());
     }
 }

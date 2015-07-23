@@ -79,8 +79,6 @@ public class NeverNoteLoginFragment extends Fragment implements NeverNoteLoginVi
             loginPresenter.onEvernoteAuthenticate(getActivity());
     }
 
-
-
     @Override
     public void enableLoginButton() {
         loginButton.setEnabled(true);

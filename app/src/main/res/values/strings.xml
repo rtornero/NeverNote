@@ -2,4 +2,7 @@
     <string name="app_name">NeverNote</string>
     <string name="welcome">Welcome to the NeverNote experience!</string>
     <string name="evernote_login">Login with Evernote</string>
+    <string name="title_activity_never_note_main">NeverNoteMainActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
