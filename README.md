@@ -21,3 +21,8 @@
 9.- Created a first approach in structure for authentication process. Using MVP to achieve a better separation between classes and leverage the load of native components as Activities and Fragments. Evernote SDK dependency is added, as well as consumer key and secret for Oauth.
 
 10.- Login button added on LoginFragment. It connects with Evernote account and returns successfully. It is required to register the login callback to the Activity component, I've tried adding it from the Fragment but it didn't work. This will modify a little bit my initial structure and require to send this callback to the Fragment as well. 
+
+11.- Login fragment restores the login button state to enabled when finishing authentication.
+
+12.- Added an activity lifecycle listener to the main Application class. This approach is based on the one implemented for the
+Evernote SDK Demo which i liked a lot. This allows to control the Activity flow of the app, and detect whenever there is no session on Evernote singleton to show the Login screen again. I adapted it to my code and fully understood its behavior.
