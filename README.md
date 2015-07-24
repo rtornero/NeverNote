@@ -14,7 +14,7 @@
 
 6.- Synchronized this new project with GitHub repository.
 
-7.- Checked Evernote SDK demo application and code to get a general idea about its behavior. It has its own model and factories implemented so our app won't have any specific model, just took everything that is needed from the SDK (such as the Note object).
+7.- Checked Evernote SDK demo application and code to get a general idea about its behavior. It has its own model and factories implemented so our app won't have any specific model, just will take what is needed from the SDK (such as the Note object).
 
 8.- Application class extended to get a global context in which we can initialize the Evernote session singleton. We'll register activity lifecycle callbacks too so the Application can listen to Activity changes and detect when to show the Login process (if Evernote session is not started!).
 
