@@ -3,5 +3,10 @@
     <dimen name="activity_horizontal_margin">24dp</dimen>
     <dimen name="activity_vertical_margin">24dp</dimen>
 
-    <dimen name="text_size_large">20sp</dimen>
+    <dimen name="fragment_list_item_padding">16dp</dimen>
+
+    <dimen name="text_size_extra_large">20sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
 </resources>

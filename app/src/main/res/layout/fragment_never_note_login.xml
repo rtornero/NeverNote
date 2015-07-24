@@ -14,7 +14,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_centerInParent="true"
-        android:textSize="@dimen/text_size_large"/>
+        android:textColor="@color/evernote_green"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_extra_large"/>
 
     <Button
         android:id="@+id/fragment_never_note_login_button"

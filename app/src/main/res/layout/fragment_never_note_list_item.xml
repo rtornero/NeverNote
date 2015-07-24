@@ -1,0 +1,19 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nevernote.fragments.NeverNoteListFragment"
+    android:padding="@dimen/fragment_list_item_padding">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_never_note_list_item_title"
+        android:textSize="@dimen/text_size_large"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textColor="@color/evernote_green"
+        android:fontFamily="sans-serif-light" />
+
+</RelativeLayout>
