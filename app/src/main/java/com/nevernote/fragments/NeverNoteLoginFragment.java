@@ -92,9 +92,9 @@ public class NeverNoteLoginFragment extends Fragment implements NeverNoteLoginVi
     @Override
     public void onDestroy(){
 
-        super.onDestroy();
         loginPresenter.setLoginView(null);
         loginPresenter = null;
+        super.onDestroy();
     }
 
 }

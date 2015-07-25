@@ -26,7 +26,6 @@ package com.nevernote.presenters;
 import android.support.v4.app.FragmentActivity;
 
 import com.evernote.client.android.EvernoteSession;
-import com.nevernote.presenters.interfaces.NeverNoteLoginPresenter;
 import com.nevernote.views.NeverNoteLoginView;
 
 /**

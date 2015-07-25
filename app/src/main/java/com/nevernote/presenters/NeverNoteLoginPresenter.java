@@ -21,19 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package com.nevernote.presenters.interfaces;
+package com.nevernote.presenters;
 
-import com.evernote.edam.type.Note;
-import com.nevernote.views.NeverNoteListView;
+import android.support.v4.app.FragmentActivity;
 
-import java.util.List;
+import com.nevernote.views.NeverNoteLoginView;
 
 /**
- * Created by Roberto on 24/7/15.
+ * Created by Roberto on 23/7/15.
  */
-public interface NeverNoteListPresenter {
+public interface NeverNoteLoginPresenter {
 
-    void setListView(NeverNoteListView view);
-    void retrieveNotes();
-    List<Note> getNotes();
+    void setLoginView(NeverNoteLoginView view);
+    void onEvernoteAuthenticate(FragmentActivity activity);
 }

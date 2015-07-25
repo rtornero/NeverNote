@@ -21,19 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package com.nevernote.views;
+package com.nevernote.presenters;
 
-import com.evernote.edam.type.Note;
-
-import java.util.List;
+import com.nevernote.views.NeverNoteListView;
 
 /**
  * Created by Roberto on 24/7/15.
  */
-public interface NeverNoteListView {
+public interface NeverNoteListPresenter {
 
-    void updateNotes(List<Note> notes);
-    void onError(Exception e);
-    void showProgressBar();
-    void hideProgressBar();
+    void setListView(NeverNoteListView view);
+    void retrieveNotes();
+
 }

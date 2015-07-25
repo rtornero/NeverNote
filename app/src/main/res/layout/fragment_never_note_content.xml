@@ -1,0 +1,48 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.nevernote.fragments.NeverNoteContentFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/fragment_never_note_content_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/evernote_green"
+            android:textSize="@dimen/text_size_extra_large"/>
+
+        <TextView
+            android:id="@+id/fragment_never_note_content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_never_note_content_title"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_marginTop="@dimen/fragment_list_item_padding"
+            android:fontFamily="sans-serif-light" />
+
+        <TextView
+            android:id="@+id/fragment_never_note_content_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_never_note_content_text"
+            android:textSize="@dimen/text_size_small"
+            android:gravity="right"
+            android:layout_marginTop="@dimen/fragment_list_item_padding"
+            android:textStyle="italic"
+            android:fontFamily="sans-serif-light" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragment_never_note_content_progress"
+            android:visibility="gone"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+</ScrollView>

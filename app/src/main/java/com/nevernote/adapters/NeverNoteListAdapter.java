@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.evernote.edam.type.Note;
 import com.nevernote.R;
+import com.nevernote.utils.OnRecyclerViewItemClickListener;
 
 import java.util.List;
 
@@ -40,15 +41,27 @@ import java.util.List;
 public class NeverNoteListAdapter extends RecyclerView.Adapter<NeverNoteListAdapter.ViewHolder> {
 
     private List<Note> neverNotesList;
+    private OnRecyclerViewItemClickListener itemClickListener;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView noteTitleTextView;
 
         public ViewHolder(View v) {
             super(v);
             noteTitleTextView = (TextView) v.findViewById(R.id.fragment_never_note_list_item_title);
+            v.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if (itemClickListener != null)
+                itemClickListener.onRecyclerViewItemClicked(v, getAdapterPosition());
+        }
+    }
+
+    public void setItemClickListener(OnRecyclerViewItemClickListener itemClickListener){
+        this.itemClickListener = itemClickListener;
     }
 
     public NeverNoteListAdapter(List<Note> nNotesList) {
@@ -57,7 +70,7 @@ public class NeverNoteListAdapter extends RecyclerView.Adapter<NeverNoteListAdap
 
     @Override
     public NeverNoteListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+                                                              int viewType) {
 
         final View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_never_note_list_item, parent, false);

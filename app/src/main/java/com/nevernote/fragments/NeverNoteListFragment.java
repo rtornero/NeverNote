@@ -23,41 +23,52 @@ THE SOFTWARE.
  */
 package com.nevernote.fragments;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.evernote.edam.type.Note;
+import com.nevernote.NeverNoteMainNavigator;
 import com.nevernote.R;
+import com.nevernote.activities.NeverNoteMainActivity;
 import com.nevernote.adapters.NeverNoteListAdapter;
 import com.nevernote.presenters.NeverNoteListPresenterImpl;
-import com.nevernote.presenters.interfaces.NeverNoteListPresenter;
-import com.nevernote.util.DividerItemDecoration;
+import com.nevernote.presenters.NeverNoteListPresenter;
+import com.nevernote.utils.DividerItemDecoration;
+import com.nevernote.utils.OnRecyclerViewItemClickListener;
 import com.nevernote.views.NeverNoteListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class NeverNoteListFragment extends Fragment implements NeverNoteListView {
+public class NeverNoteListFragment extends Fragment implements NeverNoteListView, OnRecyclerViewItemClickListener {
 
     private ProgressBar progressBar;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private NeverNoteListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private NeverNoteListPresenter listPresenter;
 
-    public static Fragment newInstance(){
+    private NeverNoteMainNavigator navigator;
 
+    private List<Note> notes;
+
+    public static Fragment newInstance(){
         return new NeverNoteListFragment();
     }
 
@@ -67,7 +78,19 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
     public void onCreate(Bundle savedInstanceState){
 
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
+        notes = new ArrayList<>();
         listPresenter = new NeverNoteListPresenterImpl(this);
+    }
+
+    @Override
+    public void onAttach(Activity activity){
+
+        super.onAttach(activity);
+        try {
+            navigator = ((NeverNoteMainActivity) activity).getNavigator();
+        } catch (ClassCastException e){}
     }
 
     @Override
@@ -92,23 +115,45 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        //FIXME
-        mAdapter = new NeverNoteListAdapter(listPresenter.getNotes());
+        mAdapter = new NeverNoteListAdapter(notes);
+        mAdapter.setItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
-        listPresenter.retrieveNotes();
+        if (notes.isEmpty())
+            listPresenter.retrieveNotes();
     }
 
     @Override
-    public void updateNotes() {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_never_note_list, menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void updateNotes(List<Note> notesList) {
+
+        notes.clear();
+        notes.addAll(notesList);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRecyclerViewItemClicked(View view, int position) {
+
+        final Note note = notes.get(position);
+        navigator.showNoteContentFragment(note.getGuid());
     }
 
     @Override
@@ -118,23 +163,19 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
 
     @Override
     public void showProgressBar() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        });
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+        progressBar.setVisibility(View.GONE);
+    }
 
+    @Override
+    public void onDestroy(){
+
+        listPresenter.setListView(null);
+        listPresenter = null;
+        super.onDestroy();
     }
 }

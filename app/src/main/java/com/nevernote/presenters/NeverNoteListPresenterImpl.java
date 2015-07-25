@@ -32,8 +32,7 @@ import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
-import com.nevernote.presenters.interfaces.NeverNoteListPresenter;
-import com.nevernote.util.AbortableCountDownLatch;
+import com.nevernote.utils.AbortableCountDownLatch;
 import com.nevernote.views.NeverNoteListView;
 
 import java.util.ArrayList;
@@ -47,8 +46,8 @@ public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
     private final static int MIN_NOTES_RETRIEVED = 0;
     private final static int MAX_NOTES_RETRIEVED = 100;
 
-    private List<Note> neverNotesList;
     private NeverNoteListView listView;
+    private List<Note> neverNotesList;
 
     /**
      * Utility instance of {@see CountDownLatch} that can be aborted
@@ -105,11 +104,6 @@ public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
     }
 
     @Override
-    public List<Note> getNotes() {
-        return neverNotesList;
-    }
-
-    @Override
     public void setListView(NeverNoteListView view) {
         this.listView = view;
     }
@@ -121,13 +115,12 @@ public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
     @Override
     public void retrieveNotes() {
 
-        if (neverNotesList.isEmpty()) {
+        neverNotesList.clear();
+        listView.showProgressBar();
+        final EvernoteNoteStoreClient noteStoreClient = EvernoteSession.getInstance()
+                .getEvernoteClientFactory().getNoteStoreClient();
+        noteStoreClient.listNotebooksAsync(notebooksCallback);
 
-            listView.showProgressBar();
-            final EvernoteNoteStoreClient noteStoreClient = EvernoteSession.getInstance()
-                    .getEvernoteClientFactory().getNoteStoreClient();
-            noteStoreClient.listNotebooksAsync(notebooksCallback);
-        }
     }
 
     /**
@@ -173,7 +166,7 @@ public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
                 if (aborted)
                     listView.onError(new AbortableCountDownLatch.AbortedException());
 
-                else listView.updateNotes();
+                else listView.updateNotes(neverNotesList);
 
             }
         }.execute();

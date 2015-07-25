@@ -25,15 +25,13 @@ package com.nevernote.views;
 
 import com.evernote.edam.type.Note;
 
-import java.util.List;
-
 /**
- * Created by Roberto on 24/7/15.
+ * Created by Roberto on 25/7/15.
  */
-public interface NeverNoteListView {
+public interface NeverNoteContentView {
 
-    void updateNotes(List<Note> notes);
-    void onError(Exception e);
+    void bindNoteContent(Note note);
     void showProgressBar();
     void hideProgressBar();
+    void onError(Exception e);
 }

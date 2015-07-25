@@ -4,5 +4,9 @@
     <string name="evernote_login">Login with Evernote</string>
     <string name="title_activity_never_note_main">NeverNoteMainActivity</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_order_by_title">Order by title</string>
+    <string name="action_order_by_date">Order by date</string>
+
+    <string name="note_created">Created on&#160;</string>
+    <string name="note_by">&#160;by&#160;</string>
 </resources>
