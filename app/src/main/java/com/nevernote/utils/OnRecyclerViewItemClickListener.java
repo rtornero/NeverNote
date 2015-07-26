@@ -27,8 +27,15 @@ import android.view.View;
 
 /**
  * Created by Roberto on 25/7/15.
+ *
+ * Interface used to detect whenever there was a click event over a RecyclerView item.
  */
 public interface OnRecyclerViewItemClickListener {
 
+    /**
+     * Detect the view that was clicked and its position
+     * @param view
+     * @param position
+     */
     void onRecyclerViewItemClicked(View view , int position);
 }

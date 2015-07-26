@@ -34,17 +34,22 @@ import android.widget.Button;
 
 import com.evernote.client.android.login.EvernoteLoginFragment;
 import com.nevernote.R;
+import com.nevernote.presenters.NeverNoteLoginPresenter;
 import com.nevernote.presenters.NeverNoteLoginPresenterImpl;
 import com.nevernote.views.NeverNoteLoginView;
 
 /**
  * Created by Roberto on 23/7/15.
+ *
+ * Login UI with a button that connects with Evernote's SDK to authenticate users. Uses MVP pattern
+ * with a {@link NeverNoteLoginPresenter} instance that calls the authentication process and
+ * notifies with the results.
  */
 public class NeverNoteLoginFragment extends Fragment implements NeverNoteLoginView, View.OnClickListener {
 
     public static final String TAG = NeverNoteLoginFragment.class.getSimpleName();
 
-    private NeverNoteLoginPresenterImpl loginPresenter;
+    private NeverNoteLoginPresenter loginPresenter;
 
     private Button loginButton;
 

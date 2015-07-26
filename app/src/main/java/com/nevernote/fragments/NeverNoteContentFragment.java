@@ -43,9 +43,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link NeverNoteContentFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Created by Roberto on 25/7/15.
+ *
+ * An instance of {@link Fragment} that shows the details of a {@link Note},
+ * such as title, content and creation date. Implements MVP pattern with a {@link NeverNoteContentPresenter}
+ * instance that retrieves the details from Evernote's SDK and notifies the view with changes.
  */
 public class NeverNoteContentFragment extends Fragment implements NeverNoteContentView {
 
@@ -55,7 +57,6 @@ public class NeverNoteContentFragment extends Fragment implements NeverNoteConte
     private static final String NOTE_GUID = "noteGuid";
 
     private String noteGuid;
-    private Note note;
 
     private TextView titleTextView;
     private TextView contentTextView;
@@ -66,11 +67,10 @@ public class NeverNoteContentFragment extends Fragment implements NeverNoteConte
     private NeverNoteContentPresenter contentPresenter;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Method that calls the constructor and adds arguments to it so the default constructor is not exposed.
      *
-     * @param noteGuid
-     * @return A new instance of fragment NeverNoteContentFragment.
+     * @param noteGuid the identifier of the {@link Note} whose details are about to be retrieved
+     * @return a new instance of {@link NeverNoteContentFragment}
      */
     public static NeverNoteContentFragment newInstance(String noteGuid) {
 
@@ -81,9 +81,7 @@ public class NeverNoteContentFragment extends Fragment implements NeverNoteConte
         return fragment;
     }
 
-    public NeverNoteContentFragment() {
-        // Required empty public constructor
-    }
+    public NeverNoteContentFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,13 +111,13 @@ public class NeverNoteContentFragment extends Fragment implements NeverNoteConte
 
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_never_note_content_progress);
 
+        //Retrieve note details from Evernote's SDK
         contentPresenter.retrieveNoteContent(noteGuid);
     }
 
     @Override
-    public void bindNoteContent(Note n) {
+    public void bindNoteContent(Note note) {
 
-        note = n;
         titleTextView.setText(note.getTitle());
         contentTextView.setText(Html.fromHtml(note.getContent()), TextView.BufferType.SPANNABLE);
 

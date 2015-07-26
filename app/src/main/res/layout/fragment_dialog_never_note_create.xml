@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:id="@+id/fragment_dialog_never_note_create_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_extra_large"
+        android:textColor="@color/evernote_green"
+        android:text="@string/enter_to_create_new_note"/>
+
+    <EditText
+        android:id="@+id/fragment_dialog_never_note_create_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:fontFamily="sans-serif-light"
+        android:hint="@string/note_title_here"
+        android:textSize="@dimen/text_size_medium"
+        android:inputType="textCapSentences"
+        android:layout_below="@id/fragment_dialog_never_note_create_header"/>
+
+    <EditText
+        android:id="@+id/fragment_dialog_never_note_create_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:hint="@string/note_content_here"
+        android:textSize="@dimen/text_size_medium"
+        android:minLines="4"
+        android:maxLines="4"
+        android:inputType="textMultiLine|textCapSentences"
+        android:gravity="left|top"
+        android:layout_below="@id/fragment_dialog_never_note_create_title"/>
+
+    <Button
+        android:id="@+id/fragment_dialog_never_note_create_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/create_note"
+        android:layout_below="@id/fragment_dialog_never_note_create_content"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_dialog_never_note_create_progress"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

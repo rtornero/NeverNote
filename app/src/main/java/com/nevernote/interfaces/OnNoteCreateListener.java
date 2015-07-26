@@ -21,27 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package com.nevernote.presenters;
+package com.nevernote.interfaces;
 
-import com.nevernote.views.NeverNoteContentView;
+import com.evernote.edam.type.Note;
 
 /**
- * Created by Roberto on 25/7/15.
+ * Created by Roberto on 26/7/15.
  *
- * Interface to control the presentation layer of the {@link com.nevernote.fragments.NeverNoteContentFragment}
- * with utility methods that perform changes on the model.
+ * Interface that allows us to notify when the user has created a new {@link Note}. It is called
+ * when the creation dialog is dismissed.
  */
-public interface NeverNoteContentPresenter {
+public interface OnNoteCreateListener {
 
     /**
-     * Sets the view interface to the presenter
-     * @param view interface to set
+     * The note has been created
+     * @param note created. If it is null, process was cancelled.
      */
-    void setContentView(NeverNoteContentView view);
-
-    /**
-     * Gets note details from Evernote's SDK
-     * @param noteGuid the identifier of the note whose details are to be retrieved
-     */
-    void retrieveNoteContent(String noteGuid);
+    void onNoteCreated(Note note);
 }

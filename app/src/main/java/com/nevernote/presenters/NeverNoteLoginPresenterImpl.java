@@ -26,10 +26,16 @@ package com.nevernote.presenters;
 import android.support.v4.app.FragmentActivity;
 
 import com.evernote.client.android.EvernoteSession;
+import com.nevernote.views.NeverNoteListView;
 import com.nevernote.views.NeverNoteLoginView;
 
 /**
  * Created by Roberto on 23/7/15.
+ *
+ * Implementation of {@link NeverNoteLoginPresenter}. It has a {@link NeverNoteLoginView} instance
+ * to notify the view with the changes in the model. In this case, we need to use an Activity to
+ * notify the callback of the authentication process. It is required by Evernote's SDK.
+ * The view will be limited then to enable or disable the UI.
  */
 public class NeverNoteLoginPresenterImpl implements NeverNoteLoginPresenter {
 
@@ -46,7 +52,10 @@ public class NeverNoteLoginPresenterImpl implements NeverNoteLoginPresenter {
 
     @Override
     public void onEvernoteAuthenticate(FragmentActivity activity) {
+
+        //Start authentication process on Evernote's oauth flow.
         EvernoteSession.getInstance().authenticate(activity);
+        //Tell the view to disable the login button
         loginView.disableLoginButton();
     }
 }

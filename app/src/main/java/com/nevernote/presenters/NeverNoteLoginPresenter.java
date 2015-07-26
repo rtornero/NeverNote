@@ -29,9 +29,21 @@ import com.nevernote.views.NeverNoteLoginView;
 
 /**
  * Created by Roberto on 23/7/15.
+ *
+ * Interface to control the presentation layer of the {@link com.nevernote.fragments.NeverNoteLoginFragment}
+ * with utility methods that perform changes on the model.
  */
 public interface NeverNoteLoginPresenter {
 
+    /**
+     * Sets the view interface to the presenter
+     * @param view
+     */
     void setLoginView(NeverNoteLoginView view);
+
+    /**
+     * Performs authentication on Evernote's oauth system.
+     * @param activity to which the authentication callback will be redirected.
+     */
     void onEvernoteAuthenticate(FragmentActivity activity);
 }

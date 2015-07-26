@@ -24,6 +24,8 @@ THE SOFTWARE.
 package com.nevernote.fragments;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -42,6 +44,7 @@ import com.nevernote.NeverNoteMainNavigator;
 import com.nevernote.R;
 import com.nevernote.activities.NeverNoteMainActivity;
 import com.nevernote.adapters.NeverNoteListAdapter;
+import com.nevernote.interfaces.OnNoteCreateListener;
 import com.nevernote.presenters.NeverNoteListPresenterImpl;
 import com.nevernote.presenters.NeverNoteListPresenter;
 import com.nevernote.utils.DividerItemDecoration;
@@ -52,21 +55,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Created by Roberto on 24/7/15.
+ *
+ * This {@link Fragment} instance displays a list of {@link Note} through a {@link RecyclerView} and its Adapter.
+ * It implements the MVP pattern with a {@link NeverNoteListPresenter} that retrieves the list of notes from Evernote's SDK
+ * and notifies with new changes. It also implements our own {@link OnNoteCreateListener} interface to
+ * detect when the user has finished creating his new note and reload the list of notes.
+ *
+ * Note creation is invoked by pressing the {@link FloatingActionButton} that is displayed
+ * at the bottom right of the screen.
  */
-public class NeverNoteListFragment extends Fragment implements NeverNoteListView, OnRecyclerViewItemClickListener {
+public class NeverNoteListFragment extends Fragment implements NeverNoteListView, OnRecyclerViewItemClickListener,
+        View.OnClickListener, OnNoteCreateListener {
 
     private ProgressBar progressBar;
 
+    /**
+     * This is the new Android's component to define scrolling views with multiple items.
+     */
     private RecyclerView mRecyclerView;
     private NeverNoteListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    /**
+     * Android 5 UI component following material design guidelines to invoke
+     * {@link Note} creation process.
+     */
+    private FloatingActionButton addNoteActionButton;
+
     private NeverNoteListPresenter listPresenter;
 
+    /**
+     * The same {@link NeverNoteMainNavigator} instance as defined in the {@link NeverNoteMainActivity}.
+     * It is used to show both note details screen and note creation dialog.
+     */
     private NeverNoteMainNavigator navigator;
-
-    private List<Note> notes;
 
     public static Fragment newInstance(){
         return new NeverNoteListFragment();
@@ -80,7 +103,6 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        notes = new ArrayList<>();
         listPresenter = new NeverNoteListPresenterImpl(this);
     }
 
@@ -89,6 +111,7 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
 
         super.onAttach(activity);
         try {
+            //Handler to the class obtained through the Activity
             navigator = ((NeverNoteMainActivity) activity).getNavigator();
         } catch (ClassCastException e){}
     }
@@ -106,20 +129,26 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
 
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_never_note_list_progress);
 
+        addNoteActionButton = (FloatingActionButton) view.findViewById(R.id.fragment_never_note_list_add_button);
+        addNoteActionButton.setRippleColor(getResources().getColor(R.color.evernote_green));
+        addNoteActionButton.setOnClickListener(this);
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_never_note_list_recycler_view);
+        //Show a separator between each RecyclerView's item
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
 
+        //For performance
         mRecyclerView.setHasFixedSize(true);
 
+        //Vertical presentation of items
         mLayoutManager = new LinearLayoutManager(view.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter = new NeverNoteListAdapter(notes);
+        mAdapter = new NeverNoteListAdapter(listPresenter.getNotes());
         mAdapter.setItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
-        if (notes.isEmpty())
+        if (listPresenter.getNotes().isEmpty())
             listPresenter.retrieveNotes();
     }
 
@@ -142,18 +171,36 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
     }
 
     @Override
-    public void updateNotes(List<Note> notesList) {
+    public void updateNotes() {
 
-        notes.clear();
-        notes.addAll(notesList);
+        //List of notes has changed, so notify the adapter to refill the recycler view
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onRecyclerViewItemClicked(View view, int position) {
 
-        final Note note = notes.get(position);
+        //Retrieve the pressed note and show its details
+        final Note note = listPresenter.getNotes().get(position);
         navigator.showNoteContentFragment(note.getGuid());
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        //When the floating button has been pressed, show the note creation screen.
+        if (v.getId() == R.id.fragment_never_note_list_add_button)
+            navigator.showNoteCreateDialogFragment(this);
+
+    }
+
+    @Override
+    public void onNoteCreated(Note note) {
+
+        //A new note has been created, if it is not null (maybe the Dialog was dismissed from the system)
+        //reload the list of notes
+        if (note != null)
+            listPresenter.retrieveNotes();
     }
 
     @Override
@@ -178,4 +225,5 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
         listPresenter = null;
         super.onDestroy();
     }
+
 }

@@ -33,6 +33,7 @@ import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
 import com.nevernote.utils.AbortableCountDownLatch;
+import com.nevernote.views.NeverNoteContentView;
 import com.nevernote.views.NeverNoteListView;
 
 import java.util.ArrayList;
@@ -40,23 +41,33 @@ import java.util.List;
 
 /**
  * Created by Roberto on 24/7/15.
+ *
+ * Implementation of {@link NeverNoteListPresenter}. It has a {@link NeverNoteListView} instance
+ * to notify the view with the changes in the model, in this case, when the list of notes has been retrieved.
  */
 public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
 
+    /**
+     * Interval of notes to retrieve, in our case, the first 100 notes.
+     */
     private final static int MIN_NOTES_RETRIEVED = 0;
     private final static int MAX_NOTES_RETRIEVED = 100;
 
     private NeverNoteListView listView;
-    private List<Note> neverNotesList;
 
     /**
-     * Utility instance of {@see CountDownLatch} that can be aborted
+     * The list of notes retrieved
+     */
+    private List<Note> notes;
+
+    /**
+     * Utility instance of {@link java.util.concurrent.CountDownLatch} that can be aborted
      * to finish the count and notify the interface.
      */
     private AbortableCountDownLatch latch;
 
     /**
-     * Evernote's SDK callback for retrieving the logged user's notebook collection
+     * Evernote's SDK callback for retrieving the logged user's notebook collection.
      */
     private EvernoteCallback<List<Notebook>> notebooksCallback = new EvernoteCallback<List<Notebook>>() {
 
@@ -66,26 +77,29 @@ public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
             if (result.isEmpty())
                 listView.hideProgressBar();
             else
+                //Once we have retrieved the list of Notebooks from the user, we need
+                //to fetch all the notes contained on them.
                 findNotes(result);
         }
 
         @Override
         public void onException(Exception exception) {
 
+            //If an error occurred notify the view
             listView.hideProgressBar();
             listView.onError(exception);
         }
     };
 
     /**
-     * Evernote's SDK callback for retrieving the notes contained on a specified notebook
+     * Evernote's SDK callback for retrieving the notes contained on a specified notebook.
      */
     private EvernoteCallback<NoteList> notebookNotesListCallback = new EvernoteCallback<NoteList>() {
         @Override
         public void onSuccess(NoteList noteList) {
 
             //Add all the notes retrieved and tell the latch that there is one new operation completed.
-            neverNotesList.addAll(noteList.getNotes());
+            notes.addAll(noteList.getNotes());
             latch.countDown();
         }
 
@@ -99,7 +113,7 @@ public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
 
     public NeverNoteListPresenterImpl(NeverNoteListView listView){
 
-        this.neverNotesList = new ArrayList<>();
+        this.notes = new ArrayList<>();
         setListView(listView);
     }
 
@@ -110,13 +124,17 @@ public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
 
     /**
      * In order to retrieve all the notes that a user has, Evernote's API requires fetching
-     * first all his notebooks.
+     * first all his notebooks. once we have them, we can iterate through them to find the notes that they contain.
      */
     @Override
     public void retrieveNotes() {
 
-        neverNotesList.clear();
+        notes.clear();
         listView.showProgressBar();
+
+        /*
+        Get a handler to the EvernoteNoteStoreClient to load al the notebook asynchronously
+         */
         final EvernoteNoteStoreClient noteStoreClient = EvernoteSession.getInstance()
                 .getEvernoteClientFactory().getNoteStoreClient();
         noteStoreClient.listNotebooksAsync(notebooksCallback);
@@ -143,10 +161,12 @@ public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
             @Override
             protected Boolean doInBackground(Void... params) {
 
+                //For each of the notebooks, find its notes
                 for (Notebook notebook : notebooks)
                     findNotesForNotebook(notebook);
 
                 try {
+                    //Wait for all the responses to be handled
                     latch.await();
                 } catch (InterruptedException e) {
 
@@ -166,7 +186,7 @@ public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
                 if (aborted)
                     listView.onError(new AbortableCountDownLatch.AbortedException());
 
-                else listView.updateNotes(neverNotesList);
+                else listView.updateNotes();
 
             }
         }.execute();
@@ -174,16 +194,29 @@ public class NeverNoteListPresenterImpl implements NeverNoteListPresenter {
     }
 
     /**
-     *
+     * Call Evernote's SDK to get all the notes of the current notebook
      * @param notebook
      */
     private void findNotesForNotebook(Notebook notebook){
 
-        final EvernoteNoteStoreClient noteStoreClient = EvernoteSession.getInstance()
-                .getEvernoteClientFactory().getNoteStoreClient();
+        /*
+        Create a new filter that sets the identifier of the current notebook. Only the notes that are inside the
+        current notebook should be retrieved.
+         */
         final NoteFilter filter = new NoteFilter();
         filter.setNotebookGuid(notebook.getGuid());
+
+        /*
+        Get a handler to the EvernoteNoteStoreClient to find the first 100 notes of this notebook asynchronously.
+         */
+        final EvernoteNoteStoreClient noteStoreClient = EvernoteSession.getInstance()
+                .getEvernoteClientFactory().getNoteStoreClient();
         noteStoreClient.findNotesAsync(filter, MIN_NOTES_RETRIEVED, MAX_NOTES_RETRIEVED, notebookNotesListCallback);
+    }
+
+    @Override
+    public List<Note> getNotes() {
+        return notes;
     }
 
 }

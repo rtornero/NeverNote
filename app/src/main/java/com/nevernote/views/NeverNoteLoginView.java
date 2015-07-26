@@ -25,9 +25,17 @@ package com.nevernote.views;
 
 /**
  * Created by Roberto on 23/7/15.
+ *
+ * View interface to notify a {@link com.nevernote.fragments.NeverNoteLoginFragment} about the
+ * authentication process to update its UI.
  */
 public interface NeverNoteLoginView {
 
+    /**
+     * Tells the view to enable or disable the UI, so the user
+     * cannot interact with it until an operation has been completed.
+     * In this case, the authentication process.
+     */
     void enableLoginButton();
     void disableLoginButton();
 

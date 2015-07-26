@@ -23,14 +23,34 @@ THE SOFTWARE.
  */
 package com.nevernote.presenters;
 
+import com.evernote.edam.type.Note;
 import com.nevernote.views.NeverNoteListView;
+
+import java.util.List;
 
 /**
  * Created by Roberto on 24/7/15.
+ *
+ * Interface to control the presentation layer of the {@link com.nevernote.fragments.NeverNoteListFragment}
+ * with utility methods that perform changes on the model.
  */
 public interface NeverNoteListPresenter {
 
+    /**
+     * Sets the view interface to the presenter
+     * @param view
+     */
     void setListView(NeverNoteListView view);
+
+    /**
+     * Call the Evernote's SDK to retrieve a list of all the notes created by the logged user
+     */
     void retrieveNotes();
+
+    /**
+     *
+     * @return the list of notes retrieved
+     */
+    List<Note> getNotes();
 
 }

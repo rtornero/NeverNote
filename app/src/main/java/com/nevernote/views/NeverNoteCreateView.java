@@ -21,27 +21,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package com.nevernote.presenters;
+package com.nevernote.views;
 
-import com.nevernote.views.NeverNoteContentView;
+import com.evernote.edam.type.Note;
 
 /**
- * Created by Roberto on 25/7/15.
+ * Created by Roberto on 26/7/15.
  *
- * Interface to control the presentation layer of the {@link com.nevernote.fragments.NeverNoteContentFragment}
- * with utility methods that perform changes on the model.
+ * View interface to notify a {@link com.nevernote.fragments.NeverNoteCreateDialogFragment} with
+ * the recently created {@link Note}
  */
-public interface NeverNoteContentPresenter {
+public interface NeverNoteCreateView {
 
     /**
-     * Sets the view interface to the presenter
-     * @param view interface to set
+     * Tell the view there is a new note that has been created
      */
-    void setContentView(NeverNoteContentView view);
+    void onNoteCreated();
 
     /**
-     * Gets note details from Evernote's SDK
-     * @param noteGuid the identifier of the note whose details are to be retrieved
+     * Tell the view that the entered note details are empty
      */
-    void retrieveNoteContent(String noteGuid);
+    void titleOrContentEmpty();
+
+    /**
+     * Show or hide the progress bar whenever there is an action that needs waiting for it.
+     */
+    void showProgressBar();
+    void hideProgressBar();
+
+    /**
+     * If there was an error, notify it through this method
+     * @param e
+     */
+    void onError(Exception e);
+
 }

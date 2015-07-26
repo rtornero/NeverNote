@@ -33,6 +33,9 @@ import com.nevernote.views.NeverNoteLoginView;
 
 /**
  * Created by Roberto on 23/7/15.
+ *
+ * Acts as the container for the login flow, with a {@link com.nevernote.fragments.NeverNoteLoginFragment}.
+ * It also has a callback that gets called when authentication process has ended.
  */
 public class NeverNoteLoginActivity extends AppCompatActivity implements EvernoteLoginFragment.ResultCallback {
 
@@ -61,7 +64,7 @@ public class NeverNoteLoginActivity extends AppCompatActivity implements Evernot
             Log.d(TAG, "Login NOT achieved");
 
         /*
-        A way to notify the view that the login process has finished is getting
+        One way to notify the view that the login process has finished is getting
         a handler to it and sending the corresponding message.
         */
         final NeverNoteLoginView loginView = (NeverNoteLoginView) getSupportFragmentManager()

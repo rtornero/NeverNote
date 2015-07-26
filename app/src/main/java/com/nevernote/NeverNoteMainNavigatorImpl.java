@@ -23,13 +23,19 @@ THE SOFTWARE.
  */
 package com.nevernote;
 
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 
 import com.nevernote.fragments.NeverNoteContentFragment;
+import com.nevernote.fragments.NeverNoteCreateDialogFragment;
 import com.nevernote.fragments.NeverNoteListFragment;
+import com.nevernote.interfaces.OnNoteCreateListener;
 
 /**
  * Created by Roberto on 25/7/15.
+ *
+ * Implementation for {@link NeverNoteMainNavigator} that performs navigation
+ * for our {@link com.nevernote.activities.NeverNoteMainActivity}
  */
 public class NeverNoteMainNavigatorImpl implements NeverNoteMainNavigator {
 
@@ -65,6 +71,23 @@ public class NeverNoteMainNavigatorImpl implements NeverNoteMainNavigator {
                 .commit();
 
         activity.supportInvalidateOptionsMenu();
+    }
+
+    @Override
+    public void showNoteCreateDialogFragment(OnNoteCreateListener onNoteCreateListener) {
+
+        final DialogFragment dialogFragment =
+                (DialogFragment) activity
+                .getSupportFragmentManager()
+                .findFragmentByTag(NeverNoteCreateDialogFragment.TAG);
+        if (dialogFragment != null)
+            activity
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(dialogFragment).commit();
+
+        NeverNoteCreateDialogFragment.newInstance(onNoteCreateListener)
+                .show(activity.getSupportFragmentManager(), NeverNoteCreateDialogFragment.TAG);
     }
 
     @Override

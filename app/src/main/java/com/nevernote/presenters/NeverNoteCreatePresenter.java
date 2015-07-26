@@ -23,25 +23,33 @@ THE SOFTWARE.
  */
 package com.nevernote.presenters;
 
-import com.nevernote.views.NeverNoteContentView;
+import com.evernote.edam.type.Note;
+import com.nevernote.views.NeverNoteCreateView;
 
 /**
- * Created by Roberto on 25/7/15.
+ * Created by Roberto on 26/7/15.
  *
- * Interface to control the presentation layer of the {@link com.nevernote.fragments.NeverNoteContentFragment}
+ * Interface to control the presentation layer of the {@link com.nevernote.fragments.NeverNoteCreateDialogFragment}
  * with utility methods that perform changes on the model.
  */
-public interface NeverNoteContentPresenter {
+public interface NeverNoteCreatePresenter {
 
     /**
      * Sets the view interface to the presenter
-     * @param view interface to set
+     * @param createView
      */
-    void setContentView(NeverNoteContentView view);
+    void setCreateView(NeverNoteCreateView createView);
 
     /**
-     * Gets note details from Evernote's SDK
-     * @param noteGuid the identifier of the note whose details are to be retrieved
+     * Calls Evernote's SDK with the request to create a new {@link Note}
+     * @param title the note title
+     * @param content the note content
      */
-    void retrieveNoteContent(String noteGuid);
+    void createNote(String title, String content);
+
+    /**
+     *
+     * @return the recently created Note
+     */
+    Note getNote();
 }

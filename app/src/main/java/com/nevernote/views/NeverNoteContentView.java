@@ -27,11 +27,27 @@ import com.evernote.edam.type.Note;
 
 /**
  * Created by Roberto on 25/7/15.
+ *
+ * View interface to notify a {@link com.nevernote.fragments.NeverNoteContentFragment} with
+ * the details of a {@link Note}
  */
 public interface NeverNoteContentView {
 
+    /**
+     * Set note details on the view
+     * @param note
+     */
     void bindNoteContent(Note note);
+
+    /**
+     * Show or hide the progress bar whenever there is an action that needs waiting for it.
+     */
     void showProgressBar();
     void hideProgressBar();
+
+    /**
+     * If there was an error, notify it through this method
+     * @param e
+     */
     void onError(Exception e);
 }

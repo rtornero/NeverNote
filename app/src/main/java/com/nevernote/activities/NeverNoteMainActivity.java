@@ -29,13 +29,23 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.evernote.edam.type.User;
 import com.nevernote.NeverNoteMainNavigator;
 import com.nevernote.NeverNoteMainNavigatorImpl;
 import com.nevernote.R;
 import com.nevernote.fragments.NeverNoteListFragment;
 
+/**
+ * Created by Roberto on 24/7/15.
+ *
+ * Main container for our application. It is the access point and has a {@link NeverNoteMainNavigator} instance
+ * to process {@link android.support.v4.app.Fragment} transactions.
+ */
 public class NeverNoteMainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
+    /**
+     * Navigator allows to decouple view transactions from the Activity
+     */
     private NeverNoteMainNavigator navigator;
 
     @Override
@@ -43,6 +53,7 @@ public class NeverNoteMainActivity extends AppCompatActivity implements Fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_never_note_main);
 
+        //Add on back stack change listener to determine the action bar's appearance when changing fragments
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
         navigator = new NeverNoteMainNavigatorImpl(this);

@@ -28,9 +28,15 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Roberto on 24/7/15.
+ *
+ * Utility {@link CountDownLatch} instance that allows to be aborted. We need this kind of
+ * control to end our count process whenever there was an error.
  */
 public class AbortableCountDownLatch extends CountDownLatch {
 
+    /**
+     * Abortion control flag
+     */
     protected boolean aborted = false;
 
     public AbortableCountDownLatch(int count) {
@@ -69,7 +75,9 @@ public class AbortableCountDownLatch extends CountDownLatch {
             throw new AbortedException();
     }
 
-
+    /**
+     * Special exception to detect if the latch was aborted or not
+     */
     public static class AbortedException extends InterruptedException {
         public AbortedException() {}
 

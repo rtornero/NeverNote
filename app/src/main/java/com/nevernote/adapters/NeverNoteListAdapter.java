@@ -37,12 +37,25 @@ import java.util.List;
 
 /**
  * Created by Roberto on 24/7/15.
+ *
+ * Adapter class for a list of {@link Note} that extends RecyclerViews interfaces and ViewHolder patterns.
  */
 public class NeverNoteListAdapter extends RecyclerView.Adapter<NeverNoteListAdapter.ViewHolder> {
 
+    /**
+     * The list of notes to be represented on the recycler view.
+     */
     private List<Note> neverNotesList;
+
+    /**
+     * As RecyclerView doesn't have an implementation of OnItemClickListener we use our own
+     * to detect when an item has been pressed.
+     */
     private OnRecyclerViewItemClickListener itemClickListener;
 
+    /**
+     * View holder pattern for child views to be recycled and improve scrolling performance
+     */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView noteTitleTextView;
@@ -50,12 +63,14 @@ public class NeverNoteListAdapter extends RecyclerView.Adapter<NeverNoteListAdap
         public ViewHolder(View v) {
             super(v);
             noteTitleTextView = (TextView) v.findViewById(R.id.fragment_never_note_list_item_title);
+            //Set our own click listener for every child view
             v.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             if (itemClickListener != null)
+                //Pass both view and position to determine which element of the adapter has been clicked
                 itemClickListener.onRecyclerViewItemClicked(v, getAdapterPosition());
         }
     }

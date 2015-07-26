@@ -9,11 +9,13 @@
         android:label="@string/app_name" >
         <activity
             android:name=".activities.NeverNoteLoginActivity"
-            android:theme="@style/NeverNoteLoginTheme" >
+            android:theme="@style/NeverNoteLoginTheme"
+            android:configChanges="orientation|screenSize">
         </activity>
         <activity
             android:name=".activities.NeverNoteMainActivity"
-            android:theme="@style/NeverNoteMainTheme" >
+            android:theme="@style/NeverNoteMainTheme"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

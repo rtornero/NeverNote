@@ -9,4 +9,11 @@
 
     <string name="note_created">Created on&#160;</string>
     <string name="note_by">&#160;by&#160;</string>
+
+    <string name="enter_to_create_new_note">Enter note details and press button to create a new note!</string>
+    <string name="note_title_here">Note title here</string>
+    <string name="note_content_here">Note content here</string>
+    <string name="create_note">Create note</string>
+
+    <string name="alert_title_or_content_empty">Title and content are required fields in order to create a new note</string>
 </resources>

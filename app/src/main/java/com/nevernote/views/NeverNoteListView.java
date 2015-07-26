@@ -25,15 +25,28 @@ package com.nevernote.views;
 
 import com.evernote.edam.type.Note;
 
-import java.util.List;
-
 /**
  * Created by Roberto on 24/7/15.
+ *
+ * View interface to notify a {@link com.nevernote.fragments.NeverNoteListFragment} with
+ * the retrieved list of {@link Note}
  */
 public interface NeverNoteListView {
 
-    void updateNotes(List<Note> notes);
-    void onError(Exception e);
+    /**
+     * Tells the view taht the list of notes has been retrieved
+     */
+    void updateNotes();
+
+    /**
+     * Show or hide the progress bar whenever there is an action that needs waiting for it.
+     */
     void showProgressBar();
     void hideProgressBar();
+
+    /**
+     * If there was an error, notify it through this method
+     * @param e
+     */
+    void onError(Exception e);
 }
