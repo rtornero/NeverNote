@@ -36,3 +36,7 @@ Evernote SDK Demo which i liked a lot. This allows to control the Activity flow 
 16.- Added a Navigator class to the MainActivity that allows to control its context navigation. Fragments will get a handler to this instance when being attached to the Activity, as the ListFragment does for pushing the new ContentFragment for each of the notes.
 
 17.- RecyclerView doesn't have methods for handling click events by itself, so I have added a new interface implemented by each ViewHolder that exposes both the clicked view and its position to the Adapter.
+
+18.- New DialogFragment added to create new notes. With a title and a content, both entered by text input fields for now, calls Evernote's SDK and notifies the ListFragment to reload data when the process has ended, so the new note appears on it. This note creation process doesn't specify which Notebook should be added to, so for now, the notes are added to the user's default Notebook (the first one). I'll try to add a Spinner to enable Notebook selection, if possible (if no Notebook was created then no Spinner will appear).
+
+19.- Screen orientation changes are now detected by the Activities so the app doesn't crash in middle of some operation or whenever I try to access a parameter set by onAttach(). This is a fix for now, if i have time i will control these events myself to ensure there is no problem at all.
