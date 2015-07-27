@@ -24,13 +24,12 @@ THE SOFTWARE.
 package com.nevernote.fragments;
 
 import android.app.Activity;
-import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,20 +38,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.evernote.edam.notestore.NoteFilter;
+import com.evernote.edam.notestore.NoteMetadata;
 import com.evernote.edam.type.Note;
+import com.evernote.edam.type.NoteSortOrder;
 import com.nevernote.NeverNoteMainNavigator;
 import com.nevernote.R;
 import com.nevernote.activities.NeverNoteMainActivity;
 import com.nevernote.adapters.NeverNoteListAdapter;
 import com.nevernote.interfaces.OnNoteCreateListener;
-import com.nevernote.presenters.NeverNoteListPresenterImpl;
 import com.nevernote.presenters.NeverNoteListPresenter;
+import com.nevernote.presenters.NeverNoteListPresenterImpl;
 import com.nevernote.utils.DividerItemDecoration;
 import com.nevernote.utils.OnRecyclerViewItemClickListener;
 import com.nevernote.views.NeverNoteListView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Roberto on 24/7/15.
@@ -75,7 +74,7 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
      */
     private RecyclerView mRecyclerView;
     private NeverNoteListAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
 
     /**
      * Android 5 UI component following material design guidelines to invoke
@@ -90,6 +89,36 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
      * It is used to show both note details screen and note creation dialog.
      */
     private NeverNoteMainNavigator navigator;
+
+    /**
+     * Scroll listener that makes this RecyclerView have an 'endless scroll'. If the user
+     * gets to the bottom of the scroll, we detect it and ask for more Notes to add to our list.
+     *
+     * This is the usual behavior for requests with pagination.
+     */
+    private RecyclerView.OnScrollListener pageScrollListener = new OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            //Get the total items that are in our adapter
+            final int totalItem = mLayoutManager.getItemCount();
+            if (totalItem == 0)
+                return;
+
+            //Get the last visible item
+            final int lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+
+            /*
+            If the last item that is visible is the same as the last item of the list,
+            we have reached the bottom of the scroll and we need to ask for more notes.
+             */
+            if (! listPresenter.isLoading()
+                    && lastVisibleItem == totalItem - 1) {
+                listPresenter.loadNotes();
+            }
+        }
+    };
 
     public static Fragment newInstance(){
         return new NeverNoteListFragment();
@@ -144,12 +173,16 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
         mLayoutManager = new LinearLayoutManager(view.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new NeverNoteListAdapter(listPresenter.getNotes());
+        mAdapter = new NeverNoteListAdapter(view.getContext(), listPresenter.getNotes());
         mAdapter.setItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
+        //Set a scroll listener to detect when the user has scrolled to the bottom and we need to load more info
+        mRecyclerView.addOnScrollListener(pageScrollListener);
+
         if (listPresenter.getNotes().isEmpty())
-            listPresenter.retrieveNotes();
+            listPresenter.loadFirstNotes();
+
     }
 
     @Override
@@ -161,11 +194,30 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
+        NoteFilter filter = null;
+
+        //Handle the menu option clicked
+        int id = item.getItemId();
+        switch(id){
+
+            //Create the appropriate filter depending on the selected menu option
+            case R.id.action_order_by_title:
+                filter = new NoteFilter();
+                filter.setOrder(NoteSortOrder.TITLE.getValue());
+                break;
+            case R.id.action_order_by_date_created:
+                filter = new NoteFilter();
+                filter.setOrder(NoteSortOrder.CREATED.getValue());
+                break;
+            case R.id.action_order_by_date_updated:
+                filter = new NoteFilter();
+                filter.setOrder(NoteSortOrder.UPDATED.getValue());
+        }
+
+        //Just reload data if we have selected a filtering option
+        if (filter != null)
+            listPresenter.setSortFilter(filter);
 
         return super.onOptionsItemSelected(item);
     }
@@ -181,7 +233,7 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
     public void onRecyclerViewItemClicked(View view, int position) {
 
         //Retrieve the pressed note and show its details
-        final Note note = listPresenter.getNotes().get(position);
+        final NoteMetadata note = listPresenter.getNotes().get(position);
         navigator.showNoteContentFragment(note.getGuid());
     }
 
@@ -200,7 +252,7 @@ public class NeverNoteListFragment extends Fragment implements NeverNoteListView
         //A new note has been created, if it is not null (maybe the Dialog was dismissed from the system)
         //reload the list of notes
         if (note != null)
-            listPresenter.retrieveNotes();
+            listPresenter.loadFirstNotes();
     }
 
     @Override

@@ -6,5 +6,12 @@
     <item android:id="@+id/action_order_by_title" android:title="@string/action_order_by_title"
         app:showAsAction="never" />
     <item android:id="@+id/action_order_by_date" android:title="@string/action_order_by_date"
-        app:showAsAction="never" />
+        app:showAsAction="never" >
+        <menu>
+            <item android:id="@+id/action_order_by_date_created" android:title="@string/action_order_by_date_created"
+                app:showAsAction="never"/>
+            <item android:id="@+id/action_order_by_date_updated" android:title="@string/action_order_by_date_updated"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
 </menu>

@@ -24,6 +24,7 @@ THE SOFTWARE.
 package com.nevernote.presenters;
 
 import com.evernote.edam.type.Note;
+import com.evernote.edam.type.Notebook;
 import com.nevernote.views.NeverNoteCreateView;
 
 /**
@@ -46,6 +47,18 @@ public interface NeverNoteCreatePresenter {
      * @param content the note content
      */
     void createNote(String title, String content);
+
+    /**
+     * Calls Evernote's API to retrieve a full list of the user notebooks. This will allow
+     * the user to select the Notebook in which he wants to upload the new note.
+     */
+    void retrieveNotebooks();
+
+    /**
+     * Sets the identifier of the notebook that has been selected
+     * @param guid selected notebook's identifier
+     */
+    void setSelectedNotebookGuid(String guid);
 
     /**
      *

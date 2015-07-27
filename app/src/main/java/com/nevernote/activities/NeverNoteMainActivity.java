@@ -23,17 +23,13 @@ THE SOFTWARE.
  */
 package com.nevernote.activities;
 
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.evernote.edam.type.User;
 import com.nevernote.NeverNoteMainNavigator;
 import com.nevernote.NeverNoteMainNavigatorImpl;
 import com.nevernote.R;
-import com.nevernote.fragments.NeverNoteListFragment;
 
 /**
  * Created by Roberto on 24/7/15.
@@ -41,7 +37,8 @@ import com.nevernote.fragments.NeverNoteListFragment;
  * Main container for our application. It is the access point and has a {@link NeverNoteMainNavigator} instance
  * to process {@link android.support.v4.app.Fragment} transactions.
  */
-public class NeverNoteMainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
+public class NeverNoteMainActivity extends AppCompatActivity
+        implements FragmentManager.OnBackStackChangedListener {
 
     /**
      * Navigator allows to decouple view transactions from the Activity
@@ -57,7 +54,6 @@ public class NeverNoteMainActivity extends AppCompatActivity implements Fragment
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
         navigator = new NeverNoteMainNavigatorImpl(this);
-
         if (savedInstanceState == null)
             navigator.showNoteListFragment();
 
@@ -66,7 +62,9 @@ public class NeverNoteMainActivity extends AppCompatActivity implements Fragment
     @Override
     public void onBackStackChanged() {
 
+        //If there are one or more Fragments in our stack...
         final boolean canGoBack = getSupportFragmentManager().getBackStackEntryCount() > 0;
+        //...we need to hide the title and show the home icon as an up icon
         getSupportActionBar().setDisplayShowTitleEnabled(!canGoBack);
         getSupportActionBar().setDisplayShowHomeEnabled(canGoBack);
         getSupportActionBar().setDisplayHomeAsUpEnabled(canGoBack);

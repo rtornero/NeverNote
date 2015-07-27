@@ -6,11 +6,15 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_order_by_title">Order by title</string>
     <string name="action_order_by_date">Order by date</string>
+    <string name="action_order_by_date_created">Order by date created</string>
+    <string name="action_order_by_date_updated">Order by date updated</string>
 
-    <string name="note_created">Created on&#160;</string>
-    <string name="note_by">&#160;by&#160;</string>
+    <string name="note_created_by">Created on %1$s. Last update on %2$s</string>
 
-    <string name="enter_to_create_new_note">Enter note details and press button to create a new note!</string>
+    <string name="note_date_format">dd/MM/yyyy</string>
+
+    <string name="enter_to_create_new_note">Enter note details and press button to create a new one!</string>
+    <string name="select_notebook_and_enter_details">Select the notebook you want your note to be in, enter note details and press button to create a new one!</string>
     <string name="note_title_here">Note title here</string>
     <string name="note_content_here">Note content here</string>
     <string name="create_note">Create note</string>

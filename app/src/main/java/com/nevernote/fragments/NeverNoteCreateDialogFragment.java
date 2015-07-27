@@ -29,17 +29,25 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.evernote.edam.type.Note;
+import com.evernote.edam.type.Notebook;
 import com.nevernote.R;
+import com.nevernote.adapters.NeverNoteNotebookSpinnerAdapter;
 import com.nevernote.interfaces.OnNoteCreateListener;
 import com.nevernote.presenters.NeverNoteCreatePresenter;
 import com.nevernote.presenters.NeverNoteCreatePresenterImpl;
 import com.nevernote.views.NeverNoteCreateView;
+
+import java.util.List;
 
 /**
  * Created by Roberto on 26/7/15.
@@ -48,16 +56,24 @@ import com.nevernote.views.NeverNoteCreateView;
  * Implements MVP pattern with a {@link NeverNoteCreatePresenter}
  * instance that sends the note details to Evernote's SDK and notifies the view when they have finished.
  */
-public class NeverNoteCreateDialogFragment extends DialogFragment implements NeverNoteCreateView, View.OnClickListener {
+public class NeverNoteCreateDialogFragment extends DialogFragment
+        implements NeverNoteCreateView, View.OnClickListener {
 
     public static final String TAG = NeverNoteCreateDialogFragment.class.getSimpleName();
 
+    /**
+     * Comes from the {@link NeverNoteListFragment} to notify updates on note creation
+     */
     private OnNoteCreateListener onNoteCreateListener;
 
     private NeverNoteCreatePresenter createPresenter;
 
     private EditText noteTitleEdit, noteContentEdit;
     private Button createButton;
+
+    private TextView headerTextView;
+
+    private Spinner notebookSpinner;
 
     private ProgressBar progressBar;
 
@@ -103,7 +119,14 @@ public class NeverNoteCreateDialogFragment extends DialogFragment implements Nev
         createButton = (Button) view.findViewById(R.id.fragment_dialog_never_note_create_button);
         createButton.setOnClickListener(this);
 
+        headerTextView = (TextView) view.findViewById(R.id.fragment_dialog_never_note_create_header);
+        headerTextView.setText(getString(R.string.enter_to_create_new_note));
+
+        notebookSpinner = (Spinner) view.findViewById(R.id.fragment_dialog_never_note_create_spinner);
+
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_dialog_never_note_create_progress);
+
+        createPresenter.retrieveNotebooks();
     }
 
     @Override
@@ -137,6 +160,35 @@ public class NeverNoteCreateDialogFragment extends DialogFragment implements Nev
         //When the note has been created, we just dismiss the dialog. We have previously
         //make it implement onDismiss() to listen to this situation.
         dismiss();
+    }
+
+    @Override
+    public void onNotebooksRetrieved(List<Notebook> notebooks) {
+
+        //Create spinner adapter with the retrieved list
+        final NeverNoteNotebookSpinnerAdapter notebookArrayAdapter = new NeverNoteNotebookSpinnerAdapter(getActivity(), notebooks);
+        notebookSpinner.setAdapter(notebookArrayAdapter);
+
+        //Set listener to detect when the user has made a selection
+        notebookSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                //Get notebook guid and set it to the presenter
+                final Notebook notebook = (Notebook) parent.getAdapter().getItem(position);
+                createPresenter.setSelectedNotebookGuid(notebook.getGuid());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        //Make spinner visibile. By default it is hidden (we don't know yet if the user has notebooks)
+        notebookSpinner.setVisibility(View.VISIBLE);
+        notebookSpinner.setSelection(0);
+
+        headerTextView.setText(getString(R.string.select_notebook_and_enter_details));
     }
 
     @Override

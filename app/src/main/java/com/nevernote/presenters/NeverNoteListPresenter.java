@@ -23,6 +23,8 @@ THE SOFTWARE.
  */
 package com.nevernote.presenters;
 
+import com.evernote.edam.notestore.NoteFilter;
+import com.evernote.edam.notestore.NoteMetadata;
 import com.evernote.edam.type.Note;
 import com.nevernote.views.NeverNoteListView;
 
@@ -43,14 +45,30 @@ public interface NeverNoteListPresenter {
     void setListView(NeverNoteListView view);
 
     /**
-     * Call the Evernote's SDK to retrieve a list of all the notes created by the logged user
+     * Retrieves the first notes created by the logged user setting the offset to zero
      */
-    void retrieveNotes();
+    void loadFirstNotes();
+
+    /**
+     * Retrieves the next page of notes created by the logged user using the offset
+     */
+    void loadNotes();
 
     /**
      *
      * @return the list of notes retrieved
      */
-    List<Note> getNotes();
+    List<NoteMetadata> getNotes();
+
+    /**
+     *
+     * @return if we are currently requesting data to Evernote
+     */
+    boolean isLoading();
+
+    /**
+     * Sets the order in which the notes should be retrieved
+     */
+    void setSortFilter(NoteFilter filter);
 
 }

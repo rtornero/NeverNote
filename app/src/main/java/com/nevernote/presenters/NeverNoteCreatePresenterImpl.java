@@ -23,12 +23,17 @@ THE SOFTWARE.
  */
 package com.nevernote.presenters;
 
+import android.text.TextUtils;
+
 import com.evernote.client.android.EvernoteSession;
 import com.evernote.client.android.EvernoteUtil;
 import com.evernote.client.android.asyncclient.EvernoteCallback;
 import com.evernote.client.android.asyncclient.EvernoteNoteStoreClient;
 import com.evernote.edam.type.Note;
+import com.evernote.edam.type.Notebook;
 import com.nevernote.views.NeverNoteCreateView;
+
+import java.util.List;
 
 /**
  * Created by Roberto on 26/7/15.
@@ -46,6 +51,11 @@ public class NeverNoteCreatePresenterImpl implements NeverNoteCreatePresenter {
      * The recently created Note
      */
     private Note note;
+
+    /**
+     *
+     */
+    private String selectedGuid;
 
     /**
      * Evernote's callback that gets called when the creation process has finished.
@@ -69,6 +79,18 @@ public class NeverNoteCreatePresenterImpl implements NeverNoteCreatePresenter {
         }
     };
 
+    private EvernoteCallback<List<Notebook>> notebooksListCallback = new EvernoteCallback<List<Notebook>>() {
+        @Override
+        public void onSuccess(List<Notebook> notebooks) {
+
+            if (! notebooks.isEmpty())
+                createView.onNotebooksRetrieved(notebooks);
+        }
+
+        @Override
+        public void onException(Exception e) {}
+    };
+
     public NeverNoteCreatePresenterImpl(NeverNoteCreateView createView){
         setCreateView(createView);
     }
@@ -90,6 +112,10 @@ public class NeverNoteCreatePresenterImpl implements NeverNoteCreatePresenter {
         note.setTitle(title);
         note.setContent(EvernoteUtil.NOTE_PREFIX + content + EvernoteUtil.NOTE_SUFFIX);
 
+        //If notebook selection was available, take the guid of the user's choice
+        if (!TextUtils.isEmpty(selectedGuid))
+            note.setNotebookGuid(selectedGuid);
+
         createView.showProgressBar();
         /*
         Get a handler to the EvernoteNoteStoreClient and send the entered details of the new note.
@@ -98,6 +124,19 @@ public class NeverNoteCreatePresenterImpl implements NeverNoteCreatePresenter {
         final EvernoteNoteStoreClient noteStoreClient =
                 EvernoteSession.getInstance().getEvernoteClientFactory().getNoteStoreClient();
         noteStoreClient.createNoteAsync(note, createNoteCallback);
+    }
+
+    @Override
+    public void retrieveNotebooks() {
+
+        final EvernoteNoteStoreClient noteStoreClient =
+                EvernoteSession.getInstance().getEvernoteClientFactory().getNoteStoreClient();
+        noteStoreClient.listNotebooksAsync(notebooksListCallback);
+    }
+
+    @Override
+    public void setSelectedNotebookGuid(String guid) {
+        this.selectedGuid = guid;
     }
 
     @Override

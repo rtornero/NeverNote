@@ -53,7 +53,6 @@ public class NeverNoteContentFragment extends Fragment implements NeverNoteConte
 
     public static final String TAG = NeverNoteContentFragment.class.getSimpleName();
 
-    private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final String NOTE_GUID = "noteGuid";
 
     private String noteGuid;
@@ -121,14 +120,11 @@ public class NeverNoteContentFragment extends Fragment implements NeverNoteConte
         titleTextView.setText(note.getTitle());
         contentTextView.setText(Html.fromHtml(note.getContent()), TextView.BufferType.SPANNABLE);
 
-        final DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-
-        final StringBuilder builder = new StringBuilder()
-                .append(getString(R.string.note_created))
-                .append(formatter.format(new Date(note.getCreated())))
-                .append(getString(R.string.note_by))
-                .append(note.getAttributes().getAuthor());
-        detailsTextView.setText(builder.toString());
+        final DateFormat formatter = new SimpleDateFormat(getString(R.string.note_date_format));
+        final String details = String.format(getString(R.string.note_created_by),
+                formatter.format(new Date(note.getCreated())),
+                formatter.format(new Date(note.getUpdated())));
+        detailsTextView.setText(details);
 
     }
 

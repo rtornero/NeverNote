@@ -24,6 +24,9 @@ THE SOFTWARE.
 package com.nevernote.views;
 
 import com.evernote.edam.type.Note;
+import com.evernote.edam.type.Notebook;
+
+import java.util.List;
 
 /**
  * Created by Roberto on 26/7/15.
@@ -34,9 +37,15 @@ import com.evernote.edam.type.Note;
 public interface NeverNoteCreateView {
 
     /**
-     * Tell the view there is a new note that has been created
+     * Tells the view there is a new note that has been created
      */
     void onNoteCreated();
+
+    /**
+     * Notifies the view with the retrieved list of notebooks
+     * @param notebooks
+     */
+    void onNotebooksRetrieved(List<Notebook> notebooks);
 
     /**
      * Tell the view that the entered note details are empty
