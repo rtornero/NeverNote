@@ -33,4 +33,5 @@ dependencies {
     compile 'com.evernote:android-sdk:2.0.0-RC2'
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.android.support:design:22.2.0'
+    compile 'com.koushikdutta.ion:ion:2.+'
 }

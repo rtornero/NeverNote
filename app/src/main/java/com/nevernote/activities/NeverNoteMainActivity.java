@@ -23,6 +23,7 @@ THE SOFTWARE.
  */
 package com.nevernote.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.nevernote.NeverNoteMainNavigator;
 import com.nevernote.NeverNoteMainNavigatorImpl;
 import com.nevernote.R;
+import com.nevernote.fragments.NeverNoteCreateDialogFragment;
 
 /**
  * Created by Roberto on 24/7/15.
@@ -56,6 +58,30 @@ public class NeverNoteMainActivity extends AppCompatActivity
         navigator = new NeverNoteMainNavigatorImpl(this);
         if (savedInstanceState == null)
             navigator.showNoteListFragment();
+
+    }
+
+    /**
+     * Used to listen to the returning of the OCR request
+     * @param requestCode
+     * @param responseCode
+     * @param intent
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+
+        if (requestCode == NeverNoteCreateDialogFragment.OCR_REQUEST){
+
+            //Deliver the message from onActivityResult to the fragment
+            final NeverNoteCreateDialogFragment dialogFragment =
+                    (NeverNoteCreateDialogFragment) getSupportFragmentManager().findFragmentByTag(NeverNoteCreateDialogFragment.TAG);
+            if (dialogFragment != null){
+                dialogFragment.onActivityResult(requestCode, responseCode, intent);
+            }
+        }
+
+        else
+            super.onActivityResult(requestCode, responseCode, intent);
 
     }
 

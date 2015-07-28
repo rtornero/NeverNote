@@ -64,4 +64,24 @@ public interface NeverNoteCreateView {
      */
     void onError(Exception e);
 
+    /**
+     * Tells the view to enable or disable the UI, so the user
+     * cannot interact with it until an operation has been completed.
+     * In this case, the note creation process and the OCR connections.
+     */
+    void enableButtons();
+    void disableButtons();
+
+    /**
+     *
+     * @param title
+     */
+    void setTitleFromOCR(String title);
+
+    /**
+     *
+     * @param content
+     */
+    void setContentFromOCR(String content);
+
 }

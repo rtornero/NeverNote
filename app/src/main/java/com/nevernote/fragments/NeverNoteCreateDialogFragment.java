@@ -23,7 +23,9 @@ THE SOFTWARE.
  */
 package com.nevernote.fragments;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -40,7 +42,10 @@ import android.widget.Toast;
 
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
+import com.nevernote.NeverNoteMainNavigator;
 import com.nevernote.R;
+import com.nevernote.activities.NeverNoteMainActivity;
+import com.nevernote.activities.NeverNoteOCRActivity;
 import com.nevernote.adapters.NeverNoteNotebookSpinnerAdapter;
 import com.nevernote.interfaces.OnNoteCreateListener;
 import com.nevernote.presenters.NeverNoteCreatePresenter;
@@ -61,6 +66,8 @@ public class NeverNoteCreateDialogFragment extends DialogFragment
 
     public static final String TAG = NeverNoteCreateDialogFragment.class.getSimpleName();
 
+    public static final int OCR_REQUEST = 3303;
+
     /**
      * Comes from the {@link NeverNoteListFragment} to notify updates on note creation
      */
@@ -69,13 +76,31 @@ public class NeverNoteCreateDialogFragment extends DialogFragment
     private NeverNoteCreatePresenter createPresenter;
 
     private EditText noteTitleEdit, noteContentEdit;
-    private Button createButton;
+    private Button createButton, ocrTitleButton, ocrContentButton;
 
     private TextView headerTextView;
 
+    /**
+     *
+     */
     private Spinner notebookSpinner;
 
     private ProgressBar progressBar;
+
+    /**
+     *
+     */
+    private boolean mReturningWithResult;
+
+    /**
+     *
+     */
+    private Intent mReturnedIntent;
+
+    /**
+     *
+     */
+    private NeverNoteMainNavigator navigator;
 
     /**
      * Method that calls the constructor and adds arguments to it so the default constructor is not exposed.
@@ -119,6 +144,12 @@ public class NeverNoteCreateDialogFragment extends DialogFragment
         createButton = (Button) view.findViewById(R.id.fragment_dialog_never_note_create_button);
         createButton.setOnClickListener(this);
 
+        ocrTitleButton = (Button) view.findViewById(R.id.fragment_dialog_never_note_title_ocr_button);
+        ocrTitleButton.setOnClickListener(this);
+
+        ocrContentButton = (Button) view.findViewById(R.id.fragment_dialog_never_note_content_ocr_button);
+        ocrContentButton.setOnClickListener(this);
+
         headerTextView = (TextView) view.findViewById(R.id.fragment_dialog_never_note_create_header);
         headerTextView.setText(getString(R.string.enter_to_create_new_note));
 
@@ -126,17 +157,71 @@ public class NeverNoteCreateDialogFragment extends DialogFragment
 
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_dialog_never_note_create_progress);
 
+        //Tell presenter to retrieve user notebooks
         createPresenter.retrieveNotebooks();
+    }
+
+    @Override
+    public void onAttach(Activity activity){
+
+        super.onAttach(activity);
+        try {
+            //Handler to the class obtained through the Activity
+            navigator = ((NeverNoteMainActivity) activity).getNavigator();
+        } catch (ClassCastException e){}
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (requestCode == OCR_REQUEST){
+            if (resultCode == Activity.RESULT_OK) {
+                mReturnedIntent = intent;
+                mReturningWithResult = true;
+            }
+        }
+
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        if (mReturningWithResult
+                && mReturnedIntent != null) {
+
+            final boolean isTitleOrContent = mReturnedIntent
+                    .getBooleanExtra(NeverNoteOCRActivity.TITLE_OR_CONTENT, true);
+            final String resultString = mReturnedIntent
+                    .getStringExtra(NeverNoteOCRActivity.OCR_TEXT_RETURNED);
+            if (isTitleOrContent)
+                setTitleFromOCR(resultString);
+
+            else setContentFromOCR(resultString);
+        }
+
+        // Reset the boolean flag back to false for next time.
+        mReturningWithResult = false;
+        mReturnedIntent = null;
     }
 
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.fragment_dialog_never_note_create_button) {
+        switch (v.getId()){
+            case R.id.fragment_dialog_never_note_create_button:
 
-            final String title = noteTitleEdit.getText().toString();
-            final String content = noteContentEdit.getText().toString();
-            createPresenter.createNote(title, content);
+                final String title = noteTitleEdit.getText().toString();
+                final String content = noteContentEdit.getText().toString();
+                createPresenter.createNote(title, content);
+                break;
+            case R.id.fragment_dialog_never_note_title_ocr_button:
+                navigator.showNoteOCRActivity(true);
+                break;
+            case R.id.fragment_dialog_never_note_content_ocr_button:
+                navigator.showNoteOCRActivity(false);
         }
     }
 
@@ -192,6 +277,16 @@ public class NeverNoteCreateDialogFragment extends DialogFragment
     }
 
     @Override
+    public void setTitleFromOCR(String title) {
+        noteTitleEdit.setText(title);
+    }
+
+    @Override
+    public void setContentFromOCR(String content) {
+        noteContentEdit.setText(content);
+    }
+
+    @Override
     public void titleOrContentEmpty() {
 
         //When the user has pressed Create button but hasn't entered any details
@@ -212,6 +307,20 @@ public class NeverNoteCreateDialogFragment extends DialogFragment
     @Override
     public void onError(Exception e) {
 
+    }
+
+    @Override
+    public void enableButtons() {
+        createButton.setEnabled(true);
+        ocrTitleButton.setEnabled(true);
+        ocrContentButton.setEnabled(true);
+    }
+
+    @Override
+    public void disableButtons() {
+        createButton.setEnabled(false);
+        ocrTitleButton.setEnabled(false);
+        ocrContentButton.setEnabled(false);
     }
 
     public void setOnNoteCreateListener(OnNoteCreateListener onNoteCreateListener) {

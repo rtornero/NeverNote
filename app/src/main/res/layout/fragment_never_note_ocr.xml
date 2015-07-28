@@ -1,0 +1,50 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin"
+    tools:context="com.nevernote.fragments.NeverNoteOCRFragment">
+
+    <TextView
+        android:id="@+id/fragment_never_note_ocr_title"
+        android:text="@string/note_ocr_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/evernote_green"
+        android:fontFamily="sans-serif-light"
+        android:textSize="@dimen/text_size_large"/>
+
+    <Button
+        android:id="@+id/fragment_never_note_ocr_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/note_ocr_process"
+        android:layout_alignParentBottom="true"/>
+
+    <com.nevernote.widget.NeverNoteHandWritingView
+        android:id="@+id/fragment_never_note_ocr_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/fragment_list_item_padding"
+        android:layout_marginBottom="@dimen/fragment_list_item_padding"
+        android:layout_below="@id/fragment_never_note_ocr_title"
+        android:layout_above="@id/fragment_never_note_ocr_button"/>
+
+    <ImageButton
+        android:id="@+id/fragment_never_note_ocr_erase_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignTop="@id/fragment_never_note_ocr_view"
+        android:layout_alignRight="@id/fragment_never_note_ocr_view"
+        android:background="@null"
+        android:src="@android:drawable/ic_delete"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_never_note_ocr_progress"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

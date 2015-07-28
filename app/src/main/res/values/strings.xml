@@ -20,4 +20,10 @@
     <string name="create_note">Create note</string>
 
     <string name="alert_title_or_content_empty">Title and content are required fields in order to create a new note</string>
+
+    <string name="note_ocr_title">Write your note\'s %s with your fingers on the center of the space below (for better recognition)</string>
+    <string name="note_ocr_enter_title">title</string>
+    <string name="note_ocr_enter_content">content</string>
+    <string name="note_ocr_process">Convert!</string>
+    <string name="from_ocr">OCR</string>
 </resources>

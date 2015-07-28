@@ -21,45 +21,39 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package com.nevernote;
-
-import android.support.v4.app.FragmentActivity;
-
-import com.nevernote.interfaces.OnNoteCreateListener;
+package com.nevernote.views;
 
 /**
- * Created by Roberto on 25/7/15.
+ * Created by Roberto on 28/7/15.
  *
- * Navigation interface for our main context.
+ * View interface to notify a {@link com.nevernote.fragments.NeverNoteOCRFragment} with
+ * the retrieved text from the recognition process.
  */
-public interface NeverNoteMainNavigator {
+public interface NeverNoteOCRView {
 
     /**
-     * Sets the context to navigate through.
-     * @param activity to perform navigation
+     * Tells the view to set the new recognised text to the note title or content.
+     * @param result the recognised text
      */
-    void setActivity(FragmentActivity activity);
+    void updateWithOCRText(String result);
 
     /**
-     * Starts a new Fragment transaction and displays the list of notes.
+     * Show or hide the progress bar whenever there is an action that needs waiting for it.
      */
-    void showNoteListFragment();
+    void showProgressBar();
+    void hideProgressBar();
 
     /**
-     * Starts a new Fragment transaction and displays the details of a note.
-     * @param noteGuid the note identifier to display its details
+     * If there was an error, notify it through this method
+     * @param e
      */
-    void showNoteContentFragment(String noteGuid);
+    void onError(Exception e);
 
     /**
-     * Shows the note creation dialog
-     * @param onNoteCreateListener that detects when the creation process has finished.
+     * Tells the view to enable or disable the UI, so the user
+     * cannot interact with it until an operation has been completed.
+     * In this case, the OCR image processing.
      */
-    void showNoteCreateDialogFragment(OnNoteCreateListener onNoteCreateListener);
-
-    /**
-     * Shows the Activity for text recognition expecting a result from it.
-     * @param isTitleOrContent should the returned text be used as the note title or content
-     */
-    void showNoteOCRActivity(boolean isTitleOrContent);
+    void enableButtons();
+    void disableButtons();
 }

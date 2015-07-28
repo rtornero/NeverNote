@@ -67,6 +67,7 @@ public class NeverNoteCreatePresenterImpl implements NeverNoteCreatePresenter {
             //We save our new Note for later and notify the view
             note = result;
             createView.hideProgressBar();
+            createView.enableButtons();
             createView.onNoteCreated();
         }
 
@@ -75,6 +76,7 @@ public class NeverNoteCreatePresenterImpl implements NeverNoteCreatePresenter {
 
             //If an error occurred, notify the view
             createView.hideProgressBar();
+            createView.enableButtons();
             createView.onError(exception);
         }
     };
@@ -117,6 +119,7 @@ public class NeverNoteCreatePresenterImpl implements NeverNoteCreatePresenter {
             note.setNotebookGuid(selectedGuid);
 
         createView.showProgressBar();
+        createView.disableButtons();
         /*
         Get a handler to the EvernoteNoteStoreClient and send the entered details of the new note.
         This operation is processed asynchronously.

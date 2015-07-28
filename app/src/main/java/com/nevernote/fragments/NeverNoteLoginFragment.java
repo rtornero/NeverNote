@@ -80,6 +80,7 @@ public class NeverNoteLoginFragment extends Fragment implements NeverNoteLoginVi
     @Override
     public void onClick(View v) {
 
+        //Call Evernote authentication through the presenter
         if (v.getId() == R.id.fragment_never_note_login_button)
             loginPresenter.onEvernoteAuthenticate(getActivity());
     }
